@@ -31,7 +31,6 @@ git clone https://github.com/eftehassanpp/simple-datadome-deober.git
 
 - **slider.txt**: Example of obfuscated code will be added here.
   ![obfuscated slider code](obfuscated.png)
-  ![alt text](image.png)
 - **slider_out.txt**: The deobfuscated version of the above code will be provided here.
   ![de-obfuscated slider code](deobed.png)
 
