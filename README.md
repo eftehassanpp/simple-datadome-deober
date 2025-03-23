@@ -30,7 +30,10 @@ git clone https://github.com/eftehassanpp/simple-datadome-deober.git
 ## Examples
 
 - **tags.txt**: Example of obfuscated code will be added here.
+  ![obfuscated slider code](obfuscated.png)
+  ![alt text](image.png)
 - **output_tags.txt**: The deobfuscated version of the above code will be provided here.
+  ![de-obfuscated slider code](deobed.png)
 
 ### Prerequisites
 
