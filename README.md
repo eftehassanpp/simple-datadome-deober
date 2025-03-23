@@ -24,7 +24,7 @@ it usage libraries like "vm","jsdom" and widely used js AST processing library "
 ### Installing
 
 ```
-https://github.com/eftehassanpp/simple-datadome-deober.git
+git clone https://github.com/eftehassanpp/simple-datadome-deober.git
 ```
 
 ## Examples
