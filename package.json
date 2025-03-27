@@ -1,7 +1,7 @@
 {
   "name": "simple-datadome-deober",
-  "version": "1.0.0",
-  "description": "A simple Node js project to deobfuscate tags.js/captcha",
+  "version": "2.0.0",
+  "description": "A simple Node js project to deobfuscate tags.js/slider captcha/interstitial",
   "main": "index.js",
   "scripts": {
     "slider": "node index.js slider",

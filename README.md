@@ -9,8 +9,10 @@
 
 ## About <a name = "about"></a>
 
+**Now works with slider inter and tags**
+
 <p>
-Its a very simple and beginner Node js project to deobfuscate tags.js/captcha
+Its a very simple and beginner Node js project to deobfuscate tags.js/slider captcha/interstitial
 current working version for tags <b>4.43.3-next</b>, for slider <b>v1.15.8</b>
 it usage libraries like "vm","jsdom" and widely used js AST processing library "@babel"
 </p>
@@ -44,35 +46,37 @@ good for any current node versions
 ## Usage <a name = "usage"></a>
 
 it works perfectly with current tags v
-get the tags.js/ or captcha loader javascript content from website and paste into the tags.txt or slider.txt depending on your use case
+get the tags.js/slider captcha/interstitial loader javascript content from website and paste into the tags.txt or slider.txt depending on your use case
 then run the command
 
-### Npm
-
-for slider
+### Slider
 
 ```
 npm run slider
 ```
 
-for tags
+```
+yarn slider
+```
+
+### Interstitial
+
+```
+npm run inter
+```
+
+```
+yarn inter
+```
+
+### Tags
 
 ```
 npm run tags
 ```
 
-### yarn
-
-for tags
-
 ```
 yarn tags
-```
-
-for tags
-
-```
-yarn slider
 ```
 
 it will deobfuscate the obfuscated code to a a more readable code . it will be atleast readable to find the nessesary functions and signal names(eg. glvd, glrd, tzp)

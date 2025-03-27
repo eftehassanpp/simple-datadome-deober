@@ -40,6 +40,7 @@ function addArrayInContext(ast, context) {
           } catch (err) {
             console.error(`Error running code:`, err);
           }
+          path.stop();
         }
       });
     },
