@@ -44,7 +44,7 @@ good for any current node versions
 ## Usage <a name = "usage"></a>
 
 it works perfectly with current tags v
-get the tags.js/ or captcha loader javascript content from website and paste into the tags.txt or slider.js depending on your use case
+get the tags.js/ or captcha loader javascript content from website and paste into the tags.txt or slider.txt depending on your use case
 then run the command
 
 ### Npm
