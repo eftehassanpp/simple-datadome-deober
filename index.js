@@ -10,7 +10,7 @@ function main() {
       console.log("deobfuscating tags from inputs/tags.txt");
       processTags("./inputs/tags.txt", "./outputs/tags_out.txt");
     } else if (a == "inter") {
-      console.log("deobfuscating inter from inputs/inter.txt");
+      console.log("deobfuscating interstitial from inputs/inter.txt");
       processInter("./inputs/inter.txt", "./outputs/inter_out.txt");
     } else
       console.error(
