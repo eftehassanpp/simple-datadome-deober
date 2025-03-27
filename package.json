@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "slider": "node index.js slider",
+    "inter": "node index.js inter",
     "tags": "node index.js tags"
   },
   "dependencies": {

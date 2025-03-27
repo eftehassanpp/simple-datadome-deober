@@ -243,8 +243,7 @@ const addHelpersInContext = (ast, context) => {
 
 const deobfuscateValues = (code, mode) => {
   let ast = parser.parse(code);
-  // let context = vm.createContext({atob:atob});
-  const context = vm.createContext({ atob: safeAtob, V: window });
+  const context = vm.createContext({ atob: safeAtob });
   // console.log(context);
 
   let functionCodeAST = getInnerFunctionCodeAst(ast, mode);
