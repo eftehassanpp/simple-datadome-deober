@@ -250,9 +250,9 @@ const deobfuscateValues = (code, mode) => {
 
   addHelpersInContext(functionCodeAST, context);
 
-  replaceTwoParamsCall(ast, context);
-
   addArrayInContext(functionCodeAST, context);
+
+  replaceTwoParamsCall(ast, context);
 
   cleanStrings(ast);
 
