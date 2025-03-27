@@ -191,19 +191,32 @@ const safeAtob = (str) => {
     return null;
   }
 };
-const getInnerFunctionCodeAst = (ast) => {
+const getInnerFunctionCodeAst = (ast, mode) => {
   let functionCodeAST;
-  traverse(ast, {
-    ObjectProperty(path) {
-      if (path.node.key.value === 1) {
-        let functionsCode = path.node.value.elements[0].body.body;
-        functionCodeAST = t.file(t.program(functionsCode));
-        path.stop();
-      }
-    },
-  });
+  if (mode && mode == "inter") {
+    traverse(ast, {
+      CallExpression(path) {
+        if (path.node.callee.type === "FunctionExpression") {
+          let entryFunctionBody = path.node.callee.body.body;
+          functionCodeAST = t.file(t.program(entryFunctionBody));
+          path.stop();
+        }
+      },
+    });
+  } else {
+    traverse(ast, {
+      ObjectProperty(path) {
+        if (path.node.key.value === 1) {
+          let functionsCode = path.node.value.elements[0].body.body;
+          functionCodeAST = t.file(t.program(functionsCode));
+          path.stop();
+        }
+      },
+    });
+  }
   return functionCodeAST;
 };
+
 const addHelpersInContext = (ast, context) => {
   traverse(ast, {
     FunctionDeclaration(innerPath) {
@@ -228,12 +241,13 @@ const addHelpersInContext = (ast, context) => {
     );
 };
 
-const deobfuscateValues = (code) => {
+const deobfuscateValues = (code, mode) => {
   let ast = parser.parse(code);
   // let context = vm.createContext({atob:atob});
   const context = vm.createContext({ atob: safeAtob, V: window });
   // console.log(context);
-  let functionCodeAST = getInnerFunctionCodeAst(ast);
+
+  let functionCodeAST = getInnerFunctionCodeAst(ast, mode);
 
   addHelpersInContext(functionCodeAST, context);
 
@@ -261,7 +275,7 @@ function processTags(inputFilePath, outputFilePath) {
   );
 }
 
-function processSlider(inputFilePath = "script.js", outputFilePath) {
+function processSlider(inputFilePath, outputFilePath) {
   const outputFile = outputFilePath;
   let content = fs.readFileSync(inputFilePath, "utf8");
   content = decode(content);
@@ -271,6 +285,18 @@ function processSlider(inputFilePath = "script.js", outputFilePath) {
   fs.writeFileSync(outputFile, deobed, "utf8");
   console.log(
     "slider deobfuscation successful, saved to> ./outputs/slider_out.txt"
+  );
+}
+function processInter(inputFilePath, outputFilePath) {
+  const outputFile = outputFilePath;
+  let content = fs.readFileSync(inputFilePath, "utf8");
+  content = decode(content);
+  const dotnotation = bracketsToDot(content, "double");
+  // console.log("doing deobber")
+  let deobed = deobfuscateValues(dotnotation, "inter");
+  fs.writeFileSync(outputFile, deobed, "utf8");
+  console.log(
+    "interstitial deobfuscation successful, saved to> ./outputs/inter_out.txt"
   );
 }
 
