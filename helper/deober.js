@@ -300,4 +300,4 @@ function processInter(inputFilePath, outputFilePath) {
   );
 }
 
-module.exports = { processTags, processSlider };
+module.exports = { processTags, processSlider, processInter };
