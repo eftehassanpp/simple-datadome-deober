@@ -12,43 +12,36 @@ const { window } = new JSDOM(``);
 
 function addArrayInContext(ast, context) {
   traverse(ast, {
-    ObjectProperty(path) {
-      if (path.node.key.value === 1) {
-        let functionsCode = path.node.value.elements[0].body.body;
-        let functionCodeAST = t.file(t.program(functionsCode));
-        traverse(functionCodeAST, {
-          VariableDeclaration(path) {
-            let declarations = path.node.declarations;
-            Array.from(declarations).forEach((dec) => {
-              if (
-                t.isMemberExpression(dec.init) &&
-                t.isIdentifier(dec.init.object, { name: "String" }) &&
-                t.isIdentifier(dec.init.property, { name: "fromCharCode" })
-              ) {
-                let code = "var " + generate(dec).code;
-                // console.log("String.fromCharCode:", code);
-                vm.runInContext(code, context);
-              }
-              if (
-                dec.init &&
-                dec.init.type &&
-                dec.init.type == "ArrayExpression" &&
-                dec.init.elements.length > 50
-              ) {
-                try {
-                  let code = generate(dec).code;
-                  //   console.log("array exp:", code);
-                  vm.runInContext(code, context);
-                } catch (err) {
-                  console.error(`Error running code:`, err);
-                }
-                // console.log("added big Array to context", context);
-                path.stop();
-              }
-            });
-          },
-        });
-      }
+    VariableDeclaration(path) {
+      let declarations = path.node.declarations;
+      Array.from(declarations).forEach((dec) => {
+        if (
+          t.isMemberExpression(dec.init) &&
+          t.isIdentifier(dec.init.object, { name: "String" }) &&
+          t.isIdentifier(dec.init.property, { name: "fromCharCode" })
+        ) {
+          let code = "var " + generate(dec).code;
+          // console.log("String.fromCharCode:", code);
+          vm.runInContext(code, context);
+        }
+        if (
+          dec.init &&
+          dec.init.type &&
+          dec.init.type == "ArrayExpression" &&
+          dec.init.elements.length > 50
+        ) {
+          try {
+            let code = generate(dec).code;
+            //   console.log("array exp:", code);
+            vm.runInContext(code, context);
+            console.log(
+              `****************** big Array of len: ${dec.init.elements.length} added to context ******************`
+            );
+          } catch (err) {
+            console.error(`Error running code:`, err);
+          }
+        }
+      });
     },
   });
 }
@@ -198,46 +191,60 @@ const safeAtob = (str) => {
     return null;
   }
 };
+const getInnerFunctionCodeAst = (ast) => {
+  let functionCodeAST;
+  traverse(ast, {
+    ObjectProperty(path) {
+      if (path.node.key.value === 1) {
+        let functionsCode = path.node.value.elements[0].body.body;
+        functionCodeAST = t.file(t.program(functionsCode));
+        path.stop();
+      }
+    },
+  });
+  return functionCodeAST;
+};
+const addHelpersInContext = (ast, context) => {
+  traverse(ast, {
+    FunctionDeclaration(innerPath) {
+      if (
+        innerPath.node.params.length >= 1 &&
+        innerPath.parent.type === "Program"
+      ) {
+        let code = generate(innerPath.node).code;
+        try {
+          vm.runInContext(code, context);
+        } catch (err) {
+          console.error(`Error running code: ${code}`, err);
+        }
+      }
+    },
+  });
+  Object.keys(context).length &&
+    console.log(
+      `****************** context updated with ${
+        Object.keys(context).length
+      } values ******************`
+    );
+};
 
 const deobfuscateValues = (code) => {
   let ast = parser.parse(code);
   // let context = vm.createContext({atob:atob});
   const context = vm.createContext({ atob: safeAtob, V: window });
   // console.log(context);
-  traverse(ast, {
-    ObjectProperty(path) {
-      if (path.node.key.value === 1) {
-        let functionsCode = path.node.value.elements[0].body.body;
-        let functionCodeAST = t.file(t.program(functionsCode));
-        traverse(functionCodeAST, {
-          FunctionDeclaration(innerPath) {
-            if (
-              innerPath.node.params.length >= 1 &&
-              innerPath.parent.type === "Program"
-            ) {
-              let code = generate(innerPath.node).code;
-              try {
-                vm.runInContext(code, context);
-              } catch (err) {
-                console.error(`Error running code: ${code}`, err);
-              }
-            }
-          },
-        });
-        console.log(
-          `****************** context updated with ${
-            Object.keys(context).length
-          } values ******************`
-        );
-        path.stop();
-      }
-    },
-  });
+  let functionCodeAST = getInnerFunctionCodeAst(ast);
+
+  addHelpersInContext(functionCodeAST, context);
+
   replaceTwoParamsCall(ast, context);
-  addArrayInContext(ast, context);
+
+  addArrayInContext(functionCodeAST, context);
+
   cleanStrings(ast);
 
   replaceSingleParamsCall(ast, context);
+
   cleanStrings(ast);
 
   return generate(ast).code;
