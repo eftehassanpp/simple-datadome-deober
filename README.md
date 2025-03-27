@@ -13,8 +13,10 @@
 
 <p>
 Its a very simple and beginner Node js project to deobfuscate tags.js/slider captcha/interstitial
-current working version for tags <b>4.43.3-next</b>, for slider <b>v1.15.8</b>, for interstitial <b>v1.15.7</b>
+current working version for tags <b>4.43.3-next</b>, for slider <b>v1.15.8</b>, for interstitial <b>v1.15.7</b>.
+
 it uses libraries like "vm","jsdom" and widely used js AST processing library "@babel"
+
 </p>
 <p><b>contributions are welcomed if you wanna improve it .</b></p>
 
